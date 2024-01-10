@@ -55,11 +55,12 @@ public class AuthenticationResource {
     }
 
     // endpoint to validate the jwt token
-    @GetMapping("/validate")
+    /*@GetMapping("/validate")
     private ResponseEntity<Boolean> validateToken(@RequestParam String jwt) {
+        System.out.println("jwt"+ jwt);
         Boolean isTokenValid = authenticationServiceImpl.validateToken(jwt);
         return ResponseEntity.ok(isTokenValid);
-    }
+    }*/
 
     @PostMapping("/logout")
     private ResponseEntity<HttpResponse> logout(HttpServletRequest request) {

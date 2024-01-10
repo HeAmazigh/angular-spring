@@ -46,7 +46,7 @@ public class HttpSecurityConfig {
         // Public endpoint authorization: register, login and validate token
         authRequest.requestMatchers(HttpMethod.POST, "/auth/authenticate").permitAll();
         authRequest.requestMatchers(HttpMethod.POST, "/auth/register").permitAll();
-        authRequest.requestMatchers(HttpMethod.POST, "/auth/validate").permitAll();
+        // authRequest.requestMatchers(HttpMethod.POST, "/auth/validate").permitAll();
         authRequest.requestMatchers(HttpMethod.POST, "/error").permitAll();
 
         // to access any other endpoint on the system, you must be authenticated

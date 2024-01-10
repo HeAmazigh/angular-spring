@@ -8,7 +8,7 @@ import { AuthService } from 'src/app/services/auth.service';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent {
 
   loginForm: FormGroup = new FormGroup({
     email: new FormControl('', [Validators.required, Validators.email]),
@@ -16,15 +16,6 @@ export class LoginComponent implements OnInit {
   });
 
   error: string = "";
-
-  ngOnInit(): void {
-    this.authService.validateToken()?.subscribe({
-      next: (result) => {
-        if(result) this.router.navigateByUrl("/customers/list");
-      },
-      error: (err) => {console.log(err)}
-    });
-  }
 
   constructor(private authService: AuthService, private router: Router) {}
 

@@ -17,30 +17,24 @@ export class AuthService {
   constructor(private http: HttpClient, private router: Router) { }
 
   public login(email: string, password: string) {
-    let options = {
-      headers: new HttpHeaders().set('Content-Type', "application/json")
-    }
-    return this.http.post("http://localhost:8080/api/auth/authenticate", {email, password}, options);
+    // let options = {
+    //   headers: new HttpHeaders().set('Content-Type', "application/json")
+    // }
+    return this.http.post("http://localhost:8080/api/auth/authenticate", {email, password});
   }
 
   public register(customer: RegisterCustomer) {
-    let options = {
-      headers: new HttpHeaders().set('Content-Type', "application/json")
-    }
-    return this.http.post("http://localhost:8080/api/auth/register", customer, options);
+    return this.http.post("http://localhost:8080/api/auth/register", customer);
   }
 
-  public validateToken() {
-    const token = window.localStorage.getItem('token');
-    if (token) {
-      let options = {
-        headers: new HttpHeaders().set('Content-Type', "application/json")
-      }
-      let params = new HttpParams().set('jwt', token);
-      return this.http.get("http://localhost:8080/api/auth/validate", { params, ...options });
-    }
-    return new Observable();
-  }
+  // public validateToken() {
+  //   const token = window.localStorage.getItem('token');
+  //   if (token) {
+  //     let params = new HttpParams().set('jwt', token);
+  //     return this.http.get("http://localhost:8080/api/auth/validate", {params});
+  //   }
+  //   return new Observable();
+  // }
 
   public loadProfil(userToken: any) {
     this.isAuthenticated = true;

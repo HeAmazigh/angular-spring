@@ -15,8 +15,12 @@ export class AppHttpInterceptor implements HttpInterceptor {
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
 
-    if (!request.url.includes("/auth/authenticate") || !request.url.includes("/auth/register")) {
-      let newRequent = request.clone({
+    let req = request.clone({
+      headers : request.headers.set('Content-Type', "application/json")
+    })
+
+    if (!req.url.includes("/auth/authenticate") || !req.url.includes("/auth/register")) {
+      let newRequent = req.clone({
         headers : request.headers.set('Authorization', 'Bearer '+ this.authService.jwtToken)
       })
       return next.handle(newRequent).pipe(

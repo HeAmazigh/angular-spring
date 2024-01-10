@@ -12,11 +12,6 @@ export class AppComponent implements OnInit {
   constructor(private authService: AuthService, private router: Router) {}
 
   ngOnInit(): void {
-    this.authService.validateToken().subscribe({
-      next: (result) => {
-        if(result) this.router.navigateByUrl("/customers/list");
-      }
-    });
     this.authService.loadToken();
   }
 }
