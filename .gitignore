@@ -1,0 +1,79 @@
+# See http://help.github.com/ignore-files/ for more about ignoring files.
+
+# Compiled output
+/angular-customers/dist
+/angular-customers/tmp
+/angular-customers/out-tsc
+/angular-customers/bazel-out
+
+# Node
+/angular-customers/node_modules
+/angular-customersnpm-debug.log
+/angular-customers/yarn-error.log
+
+# IDEs and editors
+.idea/
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+
+# Visual Studio Code
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.history/*
+
+# Miscellaneous
+/angular-customers/.angular/cache
+.sass-cache/
+/angular-customers/connect.lock
+/angular-customers/coverage
+/angular-customers/libpeerconnection.log
+testem.log
+/angular-customers/typings
+
+# System files
+/angular-customers/.DS_Store
+Thumbs.db
+.DS_Store
+*.DS_Store
+
+
+HELP.md
+spring-users/target/
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+
+### NetBeans ###
+/nbproject/private/
+/spring-users/nbbuild/
+/spring-users/dist/
+/spring-users/nbdist/
+/spring-users/.nb-gradle/
+/spring-users/build/
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+### VS Code ###
+.vscode/

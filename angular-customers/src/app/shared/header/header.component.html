@@ -1,0 +1,17 @@
+<mat-toolbar color="primary">
+  <mat-toolbar-row class="container">
+    <span> {{ authService.username }} </span>
+    <div>
+      <button mat-button
+      *ngIf="authService.isAuthenticated" (click)="openAddEditEmpForm()"
+      >
+        Ajouter un Utilisateur
+      </button>
+      <button mat-button
+        *ngIf="authService.isAuthenticated" (click)="logout()"
+      >
+        logout
+      </button>
+    </div>
+  </mat-toolbar-row>
+</mat-toolbar>

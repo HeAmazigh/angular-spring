@@ -1,0 +1,31 @@
+mat-card {
+  margin: 3rem;
+
+  mat-card-title,
+  mat-card-content {
+    display: flex;
+    justify-content: center;
+  }
+
+  form {
+    width: 100%;
+    margin-top: 3rem;
+
+    mat-form-field {
+      width: 100%;
+      min-width: 350px;
+    }
+
+    .error {
+      padding: 16px;
+      width: 300px;
+      color: white;
+      background-color: red;
+    }
+
+    .button {
+      display: flex;
+      justify-content: space-between;
+    }
+  }
+}
