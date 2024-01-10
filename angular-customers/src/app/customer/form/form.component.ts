@@ -19,6 +19,7 @@ export class FormComponent implements OnInit {
     email: new FormControl('', [Validators.required, Validators.email]),
   });
 
+  isSubmission: boolean = false
   error: string = "";
 
   constructor(
@@ -35,6 +36,7 @@ export class FormComponent implements OnInit {
 
   onSubmit() {
     if (this.customerForm.valid) {
+      this.isSubmission = true;
       if (this.customer) {
         let customerData: Customer = this.customerForm.getRawValue();
         customerData.id = this.customer.id
@@ -45,6 +47,7 @@ export class FormComponent implements OnInit {
             this.dialogRef.close(true);
           },
           error: (err) => {
+            this.isSubmission = false;
             console.log(err);
           }
         })
@@ -56,6 +59,7 @@ export class FormComponent implements OnInit {
             this.dialogRef.close(true);
           },
           error: (err) => {
+            this.isSubmission = false;
             console.log(err);
           }
         })

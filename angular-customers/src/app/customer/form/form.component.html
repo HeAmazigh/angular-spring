@@ -37,7 +37,7 @@
 
       <div class="button">
         <button type="button" color="warn" mat-button [mat-dialog-close]="false">Cancel</button>
-        <button type="submit" color="primary" mat-button> {{customer ? 'Update' : 'Save'}} </button>
+        <button type="submit" color="primary" mat-button [disabled]="customerForm.invalid || isSubmission"> {{customer ? 'Update' : 'Save'}} </button>
       </div>
     </form>
 

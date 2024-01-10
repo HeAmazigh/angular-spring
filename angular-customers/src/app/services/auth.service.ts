@@ -10,6 +10,8 @@ import { RegisterCustomer } from '../shared/interfaces/register-customer.interfa
 })
 export class AuthService {
 
+  baseURL: string = 'http://localhost:8080/api/auth';
+
   isAuthenticated: boolean = false;
   username!: any;
   jwtToken!: string;
@@ -17,24 +19,12 @@ export class AuthService {
   constructor(private http: HttpClient, private router: Router) { }
 
   public login(email: string, password: string) {
-    // let options = {
-    //   headers: new HttpHeaders().set('Content-Type', "application/json")
-    // }
-    return this.http.post("http://localhost:8080/api/auth/authenticate", {email, password});
+    return this.http.post(`${this.baseURL}/authenticate`, {email, password});
   }
 
   public register(customer: RegisterCustomer) {
-    return this.http.post("http://localhost:8080/api/auth/register", customer);
+    return this.http.post(`${this.baseURL}/register`, customer);
   }
-
-  // public validateToken() {
-  //   const token = window.localStorage.getItem('token');
-  //   if (token) {
-  //     let params = new HttpParams().set('jwt', token);
-  //     return this.http.get("http://localhost:8080/api/auth/validate", {params});
-  //   }
-  //   return new Observable();
-  // }
 
   public loadProfil(userToken: any) {
     this.isAuthenticated = true;
@@ -42,8 +32,8 @@ export class AuthService {
 
     let decoderJwt = jwtDecode(this.jwtToken)
     this.username = decoderJwt?.sub;
-
     window.localStorage.setItem('token', userToken.data.token)
+    this.router.navigateByUrl('/customers/list');
   }
 
   public logout() {

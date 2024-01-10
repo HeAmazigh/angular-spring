@@ -23,6 +23,7 @@ export class RegisterComponent {
     [PasswordValidatorService.match('password', 'repeatedPassword')]
   );
 
+  isSubmission: boolean = false;
   error: string = "";
 
   constructor(private authService: AuthService, private router: Router) {
@@ -31,21 +32,15 @@ export class RegisterComponent {
 
   onSubmit() {
     if (this.registerForm.valid) {
+      this.isSubmission = true;
       const customer: RegisterCustomer = this.registerForm.getRawValue();
-      // let firstName = this.registerForm.value.firstName;
-      // let lastName = this.registerForm.value.lastName;
-      // let email = this.registerForm.value.email;
-      // let pwd = this.registerForm.value.password;
-      // let rpwd = this.registerForm.value.repeatedPassword;
-
-
-      // this.authService.register(firstName, lastName, email, pwd, rpwd).subscribe({
       this.authService.register(customer).subscribe({
         next: responseData => {
           this.router.navigateByUrl("/login");
         },
         error: err => {
           console.log(err);
+          this.isSubmission = false;
         }
       })
     }

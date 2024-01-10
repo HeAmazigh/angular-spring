@@ -33,7 +33,7 @@
 
       <div class="button">
         <button type="button" mat-button (click)="navigateToRegister()">create an account</button>
-        <button type="submit" mat-button>Login</button>
+        <button type="submit" mat-button [disabled]="loginForm.invalid || isSubmission">Login</button>
       </div>
     </form>
 

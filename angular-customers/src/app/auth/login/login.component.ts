@@ -15,21 +15,25 @@ export class LoginComponent {
     password: new FormControl('',[Validators.required, Validators.minLength(8)]),
   });
 
+  isSubmission: boolean = false;
   error: string = "";
 
   constructor(private authService: AuthService, private router: Router) {}
 
   onSubmit() {
     if (this.loginForm.valid) {
+      this.isSubmission = true;
       let email = this.loginForm.value.email;
       let pwd = this.loginForm.value.password;
 
       this.authService.login(email, pwd).subscribe({
         next: responseData => {
           this.authService.loadProfil(responseData);
-          this.router.navigateByUrl("/customers/list");
         },
-        error: err => console.log(err)
+        error: err => {
+          this.isSubmission = false;
+          console.log(err)
+        }
 
       })
     }

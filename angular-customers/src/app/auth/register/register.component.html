@@ -68,7 +68,7 @@
 
       <div class="button">
         <button type="button" mat-button (click)="navigateToLogin()">Login</button>
-        <button type="submit" mat-button>Rrgister</button>
+        <button type="submit" mat-button [disabled]="registerForm.invalid || isSubmission" >Rrgister</button>
       </div>
     </form>
 
