@@ -11,7 +11,9 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.AuthorizeHttpRequestsConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
@@ -21,6 +23,8 @@ public class HttpSecurityConfig {
 
     private final AuthenticationProvider authProvider;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final AuthenticationEntryPoint AuthenticationEntryPointJwtImpl;
+    private final AccessDeniedHandler accessDeniedHandlerImpl;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -38,6 +42,10 @@ public class HttpSecurityConfig {
                 // execute the "jwtAuthenticationFilter" before the "UsernamePasswordAuthenticationFilter" filter is executed
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(HttpSecurityConfig::requestMatchersBuilder)
+                .exceptionHandling(eh -> {
+                    // eh.authenticationEntryPoint(AuthenticationEntryPointJwtImpl);
+                    eh.accessDeniedHandler(accessDeniedHandlerImpl);
+                })
                 .build();
     }
 
@@ -46,8 +54,9 @@ public class HttpSecurityConfig {
         // Public endpoint authorization: register, login and validate token
         authRequest.requestMatchers(HttpMethod.POST, "/auth/authenticate").permitAll();
         authRequest.requestMatchers(HttpMethod.POST, "/auth/register").permitAll();
-        // authRequest.requestMatchers(HttpMethod.POST, "/auth/validate").permitAll();
-        authRequest.requestMatchers(HttpMethod.POST, "/error").permitAll();
+        authRequest.requestMatchers(HttpMethod.GET, "/auth/validate").permitAll();
+        authRequest.requestMatchers("/error").permitAll();
+        // authRequest.requestMatchers(HttpMethod.POST, "/error").permitAll();
 
         // to access any other endpoint on the system, you must be authenticated
         authRequest.anyRequest().authenticated();

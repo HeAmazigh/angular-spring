@@ -16,7 +16,14 @@ export class HeaderComponent implements OnInit {
   ngOnInit(): void {}
 
   logout() {
-    this.authService.logout();
+    this.authService.logoutApi().subscribe({
+      next: () => {
+        this.authService.logout();
+      },
+      error: (err) => {
+        console.log(err)
+      }
+    })
   }
 
   openAddEditEmpForm() {

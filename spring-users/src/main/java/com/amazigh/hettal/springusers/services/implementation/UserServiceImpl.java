@@ -5,6 +5,7 @@ import com.amazigh.hettal.springusers.domain.User;
 import com.amazigh.hettal.springusers.dto.SaveUserDto;
 import com.amazigh.hettal.springusers.dto.UserDTO;
 import com.amazigh.hettal.springusers.dtomapper.UserDTOMapper;
+import com.amazigh.hettal.springusers.enums.Role;
 import com.amazigh.hettal.springusers.exception.EmailAddressAlreadyExistsException;
 import com.amazigh.hettal.springusers.exception.InvalidPasswordException;
 import com.amazigh.hettal.springusers.exception.UserNotFoundException;
@@ -109,6 +110,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         user.setEmail(newUser.getEmail());
         user.setPassword(passwordEncoder.encode(newUser.getPassword()));
         user.setCreatedAt(LocalDateTime.now());
+        user.setRole(Role.ADMIN);
         return userRepository.save(user);
     }
 

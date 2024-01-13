@@ -8,8 +8,8 @@ import com.amazigh.hettal.springusers.dto.SaveUserDto;
 import com.amazigh.hettal.springusers.dtomapper.UserDTOMapper;
 import com.amazigh.hettal.springusers.exception.UserAuthenticationException;
 import com.amazigh.hettal.springusers.repository.JwtTokenRepository;
-import com.amazigh.hettal.springusers.services.AuthenticationService;
-import com.amazigh.hettal.springusers.services.JwtService;
+import com.amazigh.hettal.springusers.services.auth.AuthenticationService;
+import com.amazigh.hettal.springusers.services.auth.JwtService;
 import com.amazigh.hettal.springusers.services.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
@@ -97,9 +97,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         // verify that token is present and that it is a valid token
         if (token.isPresent() && token.get().isValid()) {
             // invalidates the token to logout
-            token.get().setValid(false);
+            // token.get().setValid(false);
             // save the changes made to the token in the db
-            jwtTokenRepository.save(token.get());
+            // jwtTokenRepository.save(token.get());
+            // delete the token from db
+            jwtTokenRepository.delete(token.get());
         }
     }
 

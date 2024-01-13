@@ -4,7 +4,7 @@ import com.amazigh.hettal.springusers.domain.HttpResponse;
 import com.amazigh.hettal.springusers.dto.AuthenticationRequestDto;
 import com.amazigh.hettal.springusers.dto.RegisterUserDTO;
 import com.amazigh.hettal.springusers.dto.SaveUserDto;
-import com.amazigh.hettal.springusers.services.AuthenticationService;
+import com.amazigh.hettal.springusers.services.auth.AuthenticationService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -26,7 +26,6 @@ public class AuthenticationResource {
 
     @PostMapping("/authenticate")
     public ResponseEntity<HttpResponse> authenticate(@RequestBody @Valid AuthenticationRequestDto authRequest) {
-        System.out.println("authRequest ddddddd" + authRequest);
         String jwt = authenticationServiceImpl.login(authRequest);
 
         return ResponseEntity.created(location()).body(
@@ -55,12 +54,12 @@ public class AuthenticationResource {
     }
 
     // endpoint to validate the jwt token
-    /*@GetMapping("/validate")
+    @GetMapping("/validate")
     private ResponseEntity<Boolean> validateToken(@RequestParam String jwt) {
-        System.out.println("jwt"+ jwt);
+        System.out.println("JWT " + jwt);
         Boolean isTokenValid = authenticationServiceImpl.validateToken(jwt);
         return ResponseEntity.ok(isTokenValid);
-    }*/
+    }
 
     @PostMapping("/logout")
     private ResponseEntity<HttpResponse> logout(HttpServletRequest request) {
@@ -68,7 +67,7 @@ public class AuthenticationResource {
         return ResponseEntity.created(location()).body(
                 HttpResponse.builder()
                         .timeStamp(LocalDateTime.now().toString())
-                        .message("User created successfully")
+                        .message("Logged out successfully")
                         .statusCode(HttpStatus.CREATED.value())
                         .status(HttpStatus.ACCEPTED)
                         .data(Map.of("message", "Successful logout"))

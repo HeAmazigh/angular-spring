@@ -29,9 +29,11 @@ export class LoginComponent {
       this.authService.login(email, pwd).subscribe({
         next: responseData => {
           this.authService.loadProfil(responseData);
+          this.error = ""
         },
         error: err => {
           this.isSubmission = false;
+          this.error = "Authentication failed !"
           console.log(err)
         }
 

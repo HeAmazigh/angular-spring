@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http'
+import { HttpClient, HttpParams } from '@angular/common/http'
 import { jwtDecode } from 'jwt-decode';
 import { Router } from '@angular/router';
-import { Observable } from 'rxjs';
 import { RegisterCustomer } from '../shared/interfaces/register-customer.interface';
+import { of } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -24,6 +24,21 @@ export class AuthService {
 
   public register(customer: RegisterCustomer) {
     return this.http.post(`${this.baseURL}/register`, customer);
+  }
+
+  public validateToken() {
+    const token = window.localStorage.getItem('token');
+    if (token) {
+      const options = token ? { params: new HttpParams().set('jwt', token) } : {};
+      // console.log(options)
+      return this.http.get(`${this.baseURL}/validate`, options);
+    } else {
+      return of(false)
+    }
+  }
+
+  public logoutApi() {
+    return this.http.post(`${this.baseURL}/logout`,{});
   }
 
   public loadProfil(userToken: any) {

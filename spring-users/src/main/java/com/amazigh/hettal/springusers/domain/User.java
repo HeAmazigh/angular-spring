@@ -1,10 +1,12 @@
 package com.amazigh.hettal.springusers.domain;
 
+import com.amazigh.hettal.springusers.enums.Role;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
@@ -33,7 +35,11 @@ public class User implements UserDetails {
     @NotEmpty(message = "Password cannot be empty")
     private String password;
 
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
     private LocalDateTime createdAt;
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<JwtToken> jwtTokens;
 
@@ -57,7 +63,7 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        return List.of(new SimpleGrantedAuthority(role.name()));
     }
     @Override
     public String getUsername() {

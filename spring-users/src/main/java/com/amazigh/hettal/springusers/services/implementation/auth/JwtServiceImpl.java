@@ -1,6 +1,6 @@
 package com.amazigh.hettal.springusers.services.implementation.auth;
 
-import com.amazigh.hettal.springusers.services.JwtService;
+import com.amazigh.hettal.springusers.services.auth.JwtService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -15,7 +15,9 @@ import org.springframework.util.StringUtils;
 
 import java.security.Key;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
 
 @Service
 @RequiredArgsConstructor
@@ -27,6 +29,11 @@ public class JwtServiceImpl implements JwtService {
     // secret key with which the token is signed
     @Value("${security.jwt.secret_key}")
     private String SECRET_KEY;
+
+    //To generate token only with user details
+    public String generateToken(UserDetails user) {
+        return generateToken(user, new HashMap<>());
+    }
 
     public String generateToken(UserDetails user, Map<String, Object> extraClaims) {
         // current system date
@@ -59,6 +66,7 @@ public class JwtServiceImpl implements JwtService {
     }
 
     public String extractUsername(String jwt) {
+        // return extractClaim(jwt, Claims::getSubject);
         // extracts all the claims from the token, and then obtains the "subject" claim that contains the username
         return extractAllClaims(jwt).getSubject();
     }
@@ -71,6 +79,11 @@ public class JwtServiceImpl implements JwtService {
                 .parseClaimsJws(jwt)
                 // obtains the payload of the token (the data)
                 .getBody();
+    }
+
+    private <T> T extractClaim(String jwt, Function<Claims, T> claimsResolver) {
+        final Claims claims = extractAllClaims(jwt);
+        return claimsResolver.apply(claims);
     }
 
     public String extractJwtFromRequest(HttpServletRequest request) {

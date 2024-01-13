@@ -37,9 +37,11 @@ export class RegisterComponent {
       this.authService.register(customer).subscribe({
         next: responseData => {
           this.router.navigateByUrl("/login");
+          this.error = "";
         },
         error: err => {
           console.log(err);
+          this.error = "An error occurred, please try again later !";
           this.isSubmission = false;
         }
       })

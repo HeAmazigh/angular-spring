@@ -1,4 +1,4 @@
-package com.amazigh.hettal.springusers.services;
+package com.amazigh.hettal.springusers.services.auth;
 
 import com.amazigh.hettal.springusers.dto.AuthenticationRequestDto;
 import com.amazigh.hettal.springusers.dto.RegisterUserDTO;

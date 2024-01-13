@@ -4,7 +4,7 @@ import com.amazigh.hettal.springusers.domain.JwtToken;
 import com.amazigh.hettal.springusers.domain.User;
 import com.amazigh.hettal.springusers.exception.UserNotFoundException;
 import com.amazigh.hettal.springusers.repository.JwtTokenRepository;
-import com.amazigh.hettal.springusers.services.JwtService;
+import com.amazigh.hettal.springusers.services.auth.JwtService;
 import com.amazigh.hettal.springusers.services.UserService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -45,7 +45,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         // we look in DB for the token extracted from the authorization header
         Optional<JwtToken> jwtToken = jwtTokenRepository.findByToken(jwt);
 
-        boolean isValid = validateToken(jwtToken); // // check that the token obtained is valid
+        boolean isValid = validateToken(jwtToken); // check that the token obtained is valid
 
         // if the token is not valid, we continue with the filter chain
         if (!isValid) {
@@ -60,7 +60,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         User user = userService.findOneByUsername(username)
                 .orElseThrow(() -> new UserNotFoundException("User not found. Username: " + username));
 
-        // implementation of the "Authentication" interface
+        //implementation of the "Authentication" interface
         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                 username, // username extracted from token
                 null, // "null" is provided for the password (credentials) because the authorization mechanism is in tokens and not in passwords

@@ -26,10 +26,10 @@ export class AppHttpInterceptor implements HttpInterceptor {
       return next.handle(newRequent).pipe(
         catchError(err => {
           // console.log("err.status", err.status );
-          if (err.status == 403) {
+          if (err.status == 403 || err.status == 401) {
             this.authService.logout();
           }
-          return throwError(err.message)
+          return throwError(() => err.message)
         })
       );
     } else return next.handle(request);
