@@ -3,16 +3,17 @@ package com.amazigh.hettal.springusers.services.implementation.auth;
 import com.amazigh.hettal.springusers.services.auth.JwtService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import javax.crypto.SecretKey;
 import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
@@ -21,6 +22,7 @@ import java.util.function.Function;
 
 @Service
 @RequiredArgsConstructor
+@AllArgsConstructor
 public class JwtServiceImpl implements JwtService {
     // constant that contains the number of minutes the token lasts
     @Value("${security.jwt.expiration_in_minutes}")
@@ -40,19 +42,18 @@ public class JwtServiceImpl implements JwtService {
         Date issuedAt = new Date(System.currentTimeMillis());
         Date expirationDate = new Date((EXPIRATION_IN_MINUTES * 60 * 1000) + issuedAt.getTime());
 
-        String jwt = Jwts.builder()
+        return Jwts.builder()
                 // add additional claims that are not required
-                .setClaims(extraClaims)
+                .claims(extraClaims)
                 // add username to jwt
-                .setSubject(user.getUsername())
+                .subject(user.getUsername())
                 // indicates token issuance date
-                .setIssuedAt(issuedAt)
+                .issuedAt(issuedAt)
                 // indicates token expiration date
-                .setExpiration(expirationDate)
+                .expiration(expirationDate)
                 // specifies token signing key and algorithm
-                .signWith(generateKey(), SignatureAlgorithm.HS256)
+                .signWith(generateKey())
                 .compact();
-        return jwt;
     }
 
     private Key generateKey() {
@@ -72,13 +73,13 @@ public class JwtServiceImpl implements JwtService {
     }
 
     private Claims extractAllClaims(String jwt) {
-        return Jwts.parserBuilder()
+        return Jwts.parser()
                 // sets the signing key to verify the authenticity of the token
-                .setSigningKey(generateKey())
+                .verifyWith((SecretKey) generateKey())
                 .build()
-                .parseClaimsJws(jwt)
+                .parseSignedClaims(jwt)
                 // obtains the payload of the token (the data)
-                .getBody();
+                .getPayload();
     }
 
     private <T> T extractClaim(String jwt, Function<Claims, T> claimsResolver) {
