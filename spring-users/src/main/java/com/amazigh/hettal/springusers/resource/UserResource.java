@@ -41,8 +41,8 @@ public class UserResource {
                 );
     }
     @PostMapping
-    public ResponseEntity<HttpResponse> saveNewUser(@Valid @RequestBody User user) {
-        UserDTO savedUserDTO = userService.addNewUser(user);
+    public ResponseEntity<HttpResponse> saveNewUser(@Valid @RequestBody UserDTO userDTO) {
+        UserDTO savedUserDTO = userService.addNewUser(userDTO);
         return ResponseEntity.created(location()).body(
                 HttpResponse.builder()
                         .timeStamp(LocalDateTime.now().toString())

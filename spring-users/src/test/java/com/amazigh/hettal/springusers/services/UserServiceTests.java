@@ -1,8 +1,11 @@
 package com.amazigh.hettal.springusers.services;
 
+import com.amazigh.hettal.springusers.domain.JwtToken;
 import com.amazigh.hettal.springusers.domain.User;
 import com.amazigh.hettal.springusers.dto.UserDTO;
+import com.amazigh.hettal.springusers.enums.Role;
 import com.amazigh.hettal.springusers.exception.EmailAddressAlreadyExistsException;
+import com.amazigh.hettal.springusers.repository.JwtTokenRepository;
 import com.amazigh.hettal.springusers.repository.UserRepository;
 import com.amazigh.hettal.springusers.services.implementation.UserServiceImpl;
 import org.assertj.core.api.Assertions;
@@ -21,29 +24,41 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @ExtendWith(MockitoExtension.class)
 public class UserServiceTests {
     @Mock
     private UserRepository userRepository;
+    @Mock
+    private JwtTokenRepository jwtTokenRepository;
     @InjectMocks
     private UserServiceImpl userService;
+    private UserDTO userDTO;
     private User user;
 
     @BeforeEach
     public void setup() {
-        //userRepository = Mockito.mock(UserRepository.class);
-        //userService = new UserServiceImpl(userRepository);
-        user = new User(
-                1,
+        /*
+         userRepository = Mockito.mock(UserRepository.class);
+         userService = new UserServiceImpl(userRepository);
+        */
+        userDTO = new UserDTO(
+            0,
                 "Hettal",
                 "Amazigh",
                 "amazigh@gmail.com",
-                "password"
+                "password",
+                LocalDateTime.now()
         );
+        user = new User(
+            0,
+            "Hettal",
+            "Amazigh",
+            "amazigh@gmail.com",
+            "password"
+        );
+
         user.setCreatedAt(LocalDateTime.now());
     }
 
@@ -52,11 +67,13 @@ public class UserServiceTests {
     @Test
     public void givenUserObject_whenSaveUser_thenReturnUserObject() {
         // Given
-        given(userRepository.findByEmail(user.getEmail())).willReturn(Optional.empty());
-        given(userRepository.save(user)).willReturn(user);
+        given(userRepository.findByEmail(userDTO.getEmail())).willReturn(Optional.empty());
+        user.setRole(Role.ADMIN);
+        System.out.println(user);
+        given(userRepository.save(any(User.class))).willReturn(user);
 
         // When
-        UserDTO savedUser = userService.addNewUser(user);
+        UserDTO savedUser = userService.addNewUser(userDTO);
 
         // Then
         Assertions.assertThat(savedUser).isNotNull();
@@ -67,12 +84,10 @@ public class UserServiceTests {
     @Test
     public void givenExistingEmail_whenSaveUser_thenThrowsException() {
         // Given
-        given(userRepository.findByEmail(user.getEmail())).willReturn(Optional.of(user));
+        given(userRepository.findByEmail(userDTO.getEmail())).willReturn(Optional.of(user));
 
         // When
-        org.junit.jupiter.api.Assertions.assertThrows(EmailAddressAlreadyExistsException.class, () ->{
-            userService.addNewUser(user);
-        });
+        org.junit.jupiter.api.Assertions.assertThrows(EmailAddressAlreadyExistsException.class, () -> userService.addNewUser(userDTO));
 
         // Then
         verify(userRepository, never()).save(any(User.class));
@@ -107,14 +122,6 @@ public class UserServiceTests {
     @Test
     public void givenEmptyListUsers_whenGetAllUsers_thenReturnEmptyUsersList() {
         // Given
-        User user1 = new User(
-                3,
-                "Hettal 1",
-                "Amazigh 1",
-                "amazighettal@gmail.com",
-                "password"
-        );
-
         user.setCreatedAt(LocalDateTime.now());
 
         given(userRepository.findAll()).willReturn(Collections.emptyList());
@@ -162,12 +169,21 @@ public class UserServiceTests {
     @Test
     public void givenUserId_whenDeleteUser_thenReturnNothing() {
         int userId = 1;
+        // Mocking JwtTokens associated with the user
+        JwtToken jwtToken = new JwtToken();
+        jwtToken.setId(1L); // Set token ID
+        jwtToken.setUser(user);
+        List<JwtToken> jwtTokens = List.of(jwtToken);
+
         // Given
         given(userRepository.findById(userId)).willReturn(Optional.of(user));
         willDoNothing().given(userRepository).deleteById(userId);
+
         // When
         userService.deleteUserById(userId);
+        jwtTokenRepository.deleteAll(jwtTokens);
         // Then
+        verify(jwtTokenRepository, times(1)).deleteAll(jwtTokens);
         verify(userRepository, times(1)).deleteById(userId);
     }
 }

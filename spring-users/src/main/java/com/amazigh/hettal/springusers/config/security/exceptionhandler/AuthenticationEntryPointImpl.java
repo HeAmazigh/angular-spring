@@ -25,6 +25,7 @@ public class AuthenticationEntryPointImpl implements AuthenticationEntryPoint {
         Map<String, Object> body = new HashMap<>();
         body.put("code", HttpServletResponse.SC_UNAUTHORIZED);
         body.put("payload", "You need to login first in order to perform this action.");
+        body.put("exception", authException.getMessage());
         // Create an ObjectMapper to convert the response body to JSON and write it to the response output stream
         ObjectMapper mapper = new ObjectMapper();
         mapper.writeValue(response.getOutputStream(), body);

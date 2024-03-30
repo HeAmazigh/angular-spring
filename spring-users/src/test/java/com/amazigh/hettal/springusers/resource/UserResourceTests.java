@@ -1,9 +1,14 @@
 package com.amazigh.hettal.springusers.resource;
 
-import com.amazigh.hettal.springusers.domain.User;
-import com.amazigh.hettal.springusers.dtomapper.UserDTOMapper;
+//import com.amazigh.hettal.springusers.domain.User;
+import com.amazigh.hettal.springusers.dto.UserDTO;
+//import com.amazigh.hettal.springusers.dtomapper.UserDTOMapper;
+//import com.amazigh.hettal.springusers.enums.Role;
+import com.amazigh.hettal.springusers.repository.JwtTokenRepository;
+import com.amazigh.hettal.springusers.services.CustomerService;
 import com.amazigh.hettal.springusers.services.UserService;
-import com.fasterxml.jackson.core.JsonProcessingException;
+import com.amazigh.hettal.springusers.services.auth.AuthenticationService;
+import com.amazigh.hettal.springusers.services.auth.JwtService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hamcrest.CoreMatchers;
 import org.junit.jupiter.api.Test;
@@ -27,34 +32,44 @@ public class UserResourceTests {
     private MockMvc mockMvc;
     @Autowired
     private ObjectMapper objectMapper;
+
+    @MockBean
+    private JwtService jwtService;
+
+    @MockBean
+    private JwtTokenRepository jwtTokenRepository;
+
+    @MockBean
+    private AuthenticationService authenticationService;
+
+    @MockBean
+    private CustomerService customerService;
     @MockBean
     private UserService userService;
 
     @Test
     public void givenUserObject_whenSaveNewUser_thenReturnSavedUser() throws Exception {
        // given - precondition or setup
-        User user = new User(
-                "Hettal",
-                "Amazigh",
-                "amazighhettal@gmail.com",
-                "password"
+        UserDTO userDTO = new UserDTO(
+            0,
+             "hettal",
+            "amazigh",
+            "amazighhettal@gmail.com",
+            "password",
+            LocalDateTime.now()
         );
-        user.setCreatedAt(LocalDateTime.now());
-        BDDMockito.given(userService.addNewUser(ArgumentMatchers.any(User.class)))
-                .willAnswer((invocation) -> {
-                    User userArg = invocation.getArgument(0);
-                    return UserDTOMapper.fromUser(userArg);
-                });
+        BDDMockito.given(userService.addNewUser(ArgumentMatchers.any(UserDTO.class)))
+                .willReturn(userDTO);
 
         // when
         ResultActions response = mockMvc.perform(MockMvcRequestBuilders.post("/users")
-                .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(user)));
+                .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(userDTO)));
 
         // then
         response.andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isCreated())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.user.firstName",
-                        CoreMatchers.is("Hettal")))
+                        CoreMatchers.is("hettal")))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.user.email",
                         CoreMatchers.is("amazighhettal@gmail.com")));
     }

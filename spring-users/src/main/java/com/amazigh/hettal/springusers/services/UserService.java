@@ -12,7 +12,7 @@ public interface UserService {
 
     User registerNewUser(SaveUserDto user);
     Optional<User> findOneByUsername(String username);
-    UserDTO addNewUser(User user);
+    UserDTO addNewUser(UserDTO userdto);
     List<UserDTO> getAllUsers();
     UserDTO getUserById(int id);
     void deleteUserById(int id);

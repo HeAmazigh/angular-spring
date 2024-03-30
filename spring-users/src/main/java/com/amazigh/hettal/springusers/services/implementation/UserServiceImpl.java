@@ -60,13 +60,16 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public UserDTO addNewUser(User user) {
-        Optional<User> checkUserEmailExist = userRepository.findByEmail(user.getEmail());
+    public UserDTO addNewUser(UserDTO userDTO) {
+        Optional<User> checkUserEmailExist = userRepository.findByEmail(userDTO.getEmail());
 
         if (checkUserEmailExist.isPresent())
             throw new EmailAddressAlreadyExistsException("email address already in use");
 
+        User user = UserDTOMapper.fromUserDTO(userDTO);
         user.setCreatedAt(LocalDateTime.now());
+        user.setRole(Role.ADMIN);
+        System.out.println(user);
         return UserDTOMapper.fromUser(userRepository.save(user));
     }
 

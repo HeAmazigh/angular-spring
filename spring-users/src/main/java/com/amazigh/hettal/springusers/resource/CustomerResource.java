@@ -2,9 +2,16 @@ package com.amazigh.hettal.springusers.resource;
 
 import com.amazigh.hettal.springusers.domain.Customer;
 import com.amazigh.hettal.springusers.domain.HttpResponse;
+import com.amazigh.hettal.springusers.dto.ErrorDetails;
 import com.amazigh.hettal.springusers.dto.customer.CustomerDTO;
 import com.amazigh.hettal.springusers.exception.UserNotFoundException;
 import com.amazigh.hettal.springusers.services.CustomerService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +34,21 @@ public class CustomerResource {
         this.customerService = customerService;
     }
 
+    @Operation(summary = "return all customers", description = "Return all customers")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Return list of customers", content = {
+            @Content(
+                mediaType = "application/json",
+                array = @ArraySchema(schema = @Schema(implementation = Customer.class))
+            )
+        }),
+        @ApiResponse(responseCode = "404", description = "Customer not found", content = {
+            @Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = ErrorDetails.class)
+            )
+        })
+    })
     @GetMapping
     public ResponseEntity<HttpResponse> loadAllCustomers() {
         List<CustomerDTO> customerDTOS = customerService.getAllCustomers();

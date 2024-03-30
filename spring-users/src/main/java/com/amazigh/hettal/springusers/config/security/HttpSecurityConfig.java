@@ -43,7 +43,7 @@ public class HttpSecurityConfig {
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(HttpSecurityConfig::requestMatchersBuilder)
                 .exceptionHandling(eh -> {
-                    // eh.authenticationEntryPoint(AuthenticationEntryPointJwtImpl);
+                    eh.authenticationEntryPoint(AuthenticationEntryPointJwtImpl);
                     eh.accessDeniedHandler(accessDeniedHandlerImpl);
                 })
                 .build();
@@ -55,12 +55,8 @@ public class HttpSecurityConfig {
         authRequest.requestMatchers(HttpMethod.POST, "/auth/authenticate").permitAll();
         authRequest.requestMatchers(HttpMethod.POST, "/auth/register").permitAll();
         authRequest.requestMatchers(HttpMethod.GET, "/auth/validate").permitAll();
-        authRequest.requestMatchers("/error").permitAll();
-        // authRequest.requestMatchers(HttpMethod.POST, "/error").permitAll();
-
+        authRequest.requestMatchers("/v3/api-docs/**","/swagger-ui/**","/swagger-resources/**","/swagger-ui.html","/webjars/**").permitAll();
         // to access any other endpoint on the system, you must be authenticated
         authRequest.anyRequest().authenticated();
     }
-
-
 }

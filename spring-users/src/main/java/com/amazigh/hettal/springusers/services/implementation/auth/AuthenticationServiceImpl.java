@@ -13,6 +13,7 @@ import com.amazigh.hettal.springusers.services.auth.JwtService;
 import com.amazigh.hettal.springusers.services.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -22,15 +23,18 @@ import org.springframework.util.StringUtils;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.logging.Logger;
 
 @Service
 @AllArgsConstructor
 public class AuthenticationServiceImpl implements AuthenticationService {
+
     private final UserService userService;
-    private final JwtService jwtServiceImpl;
+    private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
     private final JwtTokenRepository jwtTokenRepository;
 
+    // private final Logger log = (Logger) LoggerFactory.getLogger(AuthenticationServiceImpl.class);
     public RegisterUserDTO register(SaveUserDto newUser) {
         User user = userService.registerNewUser(newUser);
 
@@ -74,7 +78,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             User user = optionalUser.get();
 
             // generate jwt token with the logged-in user data
-            String jwt = jwtServiceImpl.generateToken(user, generateExtraClaims(user));
+            String jwt = jwtService.generateToken(user, generateExtraClaims(user));
 
             // when a user logs in, the token is saved in DB with the id of the user to whom the token belongs
             saveUserToken(user, jwt);
@@ -88,7 +92,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     public void logout(HttpServletRequest request) {
         // get the jwt token from the request (when user logs out)
-        String jwt = jwtServiceImpl.extractJwtFromRequest(request);
+        String jwt = jwtService.extractJwtFromRequest(request);
         // if token is null or contains no text, returns control to the filter chain
         if (!StringUtils.hasText(jwt)) return;
 
@@ -109,7 +113,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         try {
             // extracts the username from the jwt, by doing so, you are validating that the token is valid:
             // check that the format is correct, validate the signature and if the token has expired
-            jwtServiceImpl.extractUsername(jwt);
+            jwtService.extractUsername(jwt);
             // if you manage to extract the username from the jwt, the token is valid and returns true
             return true;
 
@@ -124,7 +128,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         JwtToken jwtToken = new JwtToken();
         jwtToken.setUser(user);
         jwtToken.setToken(jwt);
-        jwtToken.setExpirationDate(jwtServiceImpl.extractExpirationDate(jwt));
+        jwtToken.setExpirationDate(jwtService.extractExpirationDate(jwt));
         jwtToken.setValid(true);
 
         jwtTokenRepository.save(jwtToken);
