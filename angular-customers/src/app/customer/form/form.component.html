@@ -1,27 +1,43 @@
-
 <mat-card>
-  <mat-card-title>Rrgister</mat-card-title>
+  <mat-card-title>New customer</mat-card-title>
   <mat-card-content>
     <form [formGroup]="customerForm" (ngSubmit)="onSubmit()">
-      <p >
+      <p>
         <mat-form-field>
-          <input type="text" matInput placeholder="First Name" formControlName="firstname">
-          <mat-error *ngIf="customerForm.get('firstname')?.errors?.['required']">
+          <input
+            type="text"
+            matInput
+            placeholder="First Name"
+            formControlName="firstname"
+          />
+          <mat-error
+            *ngIf="customerForm.get('firstname')?.errors?.['required']"
+          >
             First name is required.
           </mat-error>
         </mat-form-field>
       </p>
-      <p >
+      <p>
         <mat-form-field>
-          <input type="text" matInput placeholder="Last Name" formControlName="lastname">
+          <input
+            type="text"
+            matInput
+            placeholder="Last Name"
+            formControlName="lastname"
+          />
           <mat-error *ngIf="customerForm.get('lastname')?.errors?.['required']">
             Last name is required.
           </mat-error>
         </mat-form-field>
       </p>
-      <p >
+      <p>
         <mat-form-field>
-          <input type="text" matInput placeholder="E-mail" formControlName="email">
+          <input
+            type="text"
+            matInput
+            placeholder="E-mail"
+            formControlName="email"
+          />
           <mat-error *ngIf="customerForm.get('email')?.errors?.['required']">
             Email is required.
           </mat-error>
@@ -36,11 +52,23 @@
       </p>
 
       <div class="button">
-        <button type="button" color="warn" mat-button [mat-dialog-close]="false">Cancel</button>
-        <button type="submit" color="primary" mat-button [disabled]="customerForm.invalid || isSubmission"> {{customer ? 'Update' : 'Save'}} </button>
+        <button
+          type="button"
+          color="warn"
+          mat-button
+          [mat-dialog-close]="false"
+        >
+          Cancel
+        </button>
+        <button
+          type="submit"
+          color="primary"
+          mat-button
+          [disabled]="customerForm.invalid || isSubmission"
+        >
+          {{ customer ? "Update" : "Save" }}
+        </button>
       </div>
     </form>
-
   </mat-card-content>
 </mat-card>
-

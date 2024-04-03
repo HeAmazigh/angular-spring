@@ -6,17 +6,19 @@ import { AuthService } from 'src/app/services/auth.service';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss']
+  styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent {
-
   loginForm: FormGroup = new FormGroup({
     email: new FormControl('', [Validators.required, Validators.email]),
-    password: new FormControl('',[Validators.required, Validators.minLength(8)]),
+    password: new FormControl('', [
+      Validators.required,
+      Validators.minLength(8),
+    ]),
   });
 
   isSubmission: boolean = false;
-  error: string = "";
+  error: string = '';
 
   constructor(private authService: AuthService, private router: Router) {}
 
@@ -27,17 +29,15 @@ export class LoginComponent {
       let pwd = this.loginForm.value.password;
 
       this.authService.login(email, pwd).subscribe({
-        next: responseData => {
+        next: (responseData) => {
           this.authService.loadProfil(responseData);
-          this.error = ""
+          this.error = '';
         },
-        error: err => {
+        error: (err) => {
           this.isSubmission = false;
-          this.error = "Authentication failed !"
-          console.log(err)
-        }
-
-      })
+          this.error = 'Bad credentials !';
+        },
+      });
     }
   }
 
